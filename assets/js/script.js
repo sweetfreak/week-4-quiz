@@ -32,7 +32,7 @@ var timeSeconds = 100;
 var timeSecondsEl = document.querySelector("#seconds");
 //time-message
 var timeMessageEl = document.querySelector("#time-message");
-//footer (back to main button)
+//footer 
 var footerEl = document.querySelector("#footer");
 //grade the answer right or wrong
 var gradeAnswerEl = document.querySelector("#grade-answer");
@@ -54,6 +54,7 @@ var answersArr1 = [
     
 ]
 
+var players = [];
 
 //------------------------------Variable functions
 var startQuiz = function(event) {
@@ -66,14 +67,13 @@ var startQuiz = function(event) {
     countdown();
     //start questions 
     askQuestion(round);
-   
+
+    
 };    
 
 
 // Timer that counts down from 5
 function countdown() {
-   
-   
 
    if ((round + 1) > questionArr.length) {  
 
@@ -148,7 +148,10 @@ var askQuestion = function(questionNumber) {
     
 }; 
 
+//could this be a switch case instead??
+
 var chooseAnswer = function(event) {
+
       //get the current selected option's value and makes lowercase
     var statusValue = (event.target.textContent); /// look here
     console.log(statusValue);
@@ -166,6 +169,19 @@ var chooseAnswer = function(event) {
         gradeAnswerEl.textContent = "Wrong!"
         timeSeconds -= 20; 
     }
+
+    // switch (round) {
+    //     //Or statement for each correct answer, paired with round
+    //     case ('0' && statusValue === "Hypertext Markup Language"):
+    //     //case '1' && (statusValue === "a tag that defines a division or section in an HTML document"):
+    //     //case '2' &&  (statusValue === "the i is just a variable, it could be anything, but it typically means acts as an 'index'"):
+    //     //result of case    
+    //     gradeAnswerEl.textContent = "Correct!"         
+    //          break;
+    //     //wrong answer - default;     
+    //     default:
+    //     gradeAnswerEl.textContent = "Wrong!"
+    // }
 
     //empties current content in the quiz.
     quizEl.textContent = "";
@@ -217,22 +233,69 @@ var highScoreScreen = function() {
     highScoreDivEl.appendChild(submitInitialsButtonEl);
     
     backToMainButtonEl.addEventListener("click", backToMain);
-    submitInitialsButtonEl.addEventListener("click", saveShowHighScore);
-}
 
-var saveShowHighScore = function() {
-    //player
+    //submit and show high scores
+    submitInitialsButtonEl.addEventListener("click", function(event){
+
+        event.preventDefault();
+    //player object
     var player = {
         initials: initialsInputEl.value,
-        score: timeSeconds,
+        score: timeSeconds
     };
 
       // set new submission to local storage 
-  localStorage.setItem("player", JSON.stringify(player));
+    localStorage.setItem("player", JSON.stringify(player));
+   
+    //push to players array
+    
+    console.log("players array after push " + players);
 
-  // clears the form
+  // clears the form 
    document.getElementById("initials-input").value="";
+
+   //Clear area
+    highScoreH3El.textContent = "";
+
+    
+    //gets items saved as strings
+    players = localStorage.getItem("player");
+    //
+    var savedScoresArray = [];
+    //
+    savedScoresArray.push(player);
+    console.log(players);
+    console.log(savedScoresArray);
+
+    //checks if there's any data saved. if there's no data saved in tasks, it'll return false
+    // if (!players) { //could also write (!tasks)
+    //   players = [];
+    //   return false;
+    // }
+
+    //shows the high score - enter the 
+    var showHighScore = function(item) {
+    var createPEl = document.createElement("p");
+    createPEl.textElement = JSON.stringify(item);
+    highScoreDivEl.appendChild(createPEl);
 }
+    //convert tasks fromt he string format back into an array of objects
+    //var savedScoresArray = JSON.parse(savedScoresArray);
+  
+    var scoreListEl = document.createElement("ul");
+    highScoreDivEl.appendChild(scoreListEl);
+    //new code
+    for (var i=0; i < players.length; i++) {
+      //pass each task object into the 'createTaskEl' function
+      var scoreEl = document.createElement("li");
+      scoreEl.textContent = savedScoresArray[i];
+        scoreListEl.appendChild(scoreEl);
+    }
+
+    });
+}
+
+
 
 var backToMain = function() {
     //revert time message
@@ -252,15 +315,15 @@ startButtonEl = document.createElement("button");
 startButtonEl.id = "start-button";
 startButtonEl.textContent = "Start Quiz!";
     highScoreEl.textContent = "";
-    footerEl.textContent = "";
+    gradeAnswerEl.textContent = "";
     
 
     //append elements
     introEl.appendChild(introWelcomeEl);
     introEl.appendChild(directionsEl);
     introEl.appendChild(startButtonEl);
-
-
+    //footerEl.textContent="";
+    
     startButtonEl.addEventListener("click", startQuiz);
 
 }
