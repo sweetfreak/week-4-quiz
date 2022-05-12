@@ -6,3 +6,7 @@
     color: gray;
     font-style: italic;
 }
+
+.answer-text:hover {
+    background-color: darkgray;
+}

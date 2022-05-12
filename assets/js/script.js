@@ -36,43 +36,62 @@ var timeMessageEl = document.querySelector("#time-message");
 var footerEl = document.querySelector("#footer");
 //grade the answer right or wrong
 var gradeAnswerEl = document.querySelector("#grade-answer");
-
+//input for initials
+//var initialsInputEl = document.createElement("input");
 
 
 //array of questions
 var questionArr= [
     "What does HTML stand for?", 
     'What is a "div"?',
-    "How many types of javascript functions are there?"
+    "What does the 'i' stand for, in a for loop?"
 ];
 //array of answer arrays MUST HAVE SAME AMOUNT OF ARRAYS AS THERE ARE QUESTIONS
 var answersArr1 = [
-    ["red", "red", "green", "red"],
-    ["blue", "blue", "blue", "yellow"],
-    ["yellow", "yellow", "purple", "yellow"],
+    ["Hypertext Markup Language", "Hello, Tania, My Love", "Hyper Time Makeup Literature", "It doesn't stand for anything, like SAT"],
+    ["a hole in the ground, short for divet", "the divider between cubicle desks in an open floor plan office", "a tag that defines a division or section in an HTML document", "who cares, man?"],
+    ["i stands for the user input", "the i is just a variable, it could be anything, but it typically means acts as an 'index'", "i stand for, myself, as in, me - the self - I think, therefore I am.", "imaginary number."],
     
 ]
 
+
 //------------------------------Variable functions
-var startQuiz = function() {
-    //event.preventDefault();
+var startQuiz = function(event) {
+   
     introEl.textContent = "";
 
+    timeSeconds= 100;
     round= 0;
     //start timer
     countdown();
-   //start questions 
-   askQuestion(round);
+    //start questions 
+    askQuestion(round);
+   
 };    
 
- // Use the `setInterval()` method to call a function to be executed every 1000 milliseconds
- var timerInterval = setInterval(function () {
+
+// Timer that counts down from 5
+function countdown() {
+   
+   
+
+   if ((round + 1) > questionArr.length) {  
+
+    clearInterval(timerInterval);
+    }
+
+    var timerInterval = setInterval(function () {
+  
+         
     // As long as the `timeLeft` is greater than 1
-    timeSecondsEl.textContent = timeSeconds;
-    if (timeSeconds > 1) {
-     timeSeconds--;
-     console.log(timeSeconds);
-    } else {
+       timeSecondsEl.textContent = timeSeconds;
+    
+
+    if (timeSeconds >= 1 && round +1 <= questionArr.length) {
+        timeSeconds--;
+        console.log(timeSeconds);
+    }  
+    else if (timeSeconds === 0){
       // Once `timeLeft` gets to 0, set `timerEl` to an empty string
       timeSecondsEl.textContent = '';
       // Use `clearInterval()` to stop the timer
@@ -81,13 +100,10 @@ var startQuiz = function() {
       timeMessageEl.textContent = "GAME OVER!";
       //Call High Scores Screen
       highScoreScreen();
+
     }
   }, 1000);
 
-// Timer that counts down from 5
-function countdown() {
-    timeSeconds= 100;
-    timerInterval;
 }
 
 
@@ -118,28 +134,31 @@ var askQuestion = function(questionNumber) {
     for (var i = 0; answersArr1[round][i]; i++) {
         //calls list element
         var answerEl = document.createElement("li");
+        answerEl.className = "answer-text";
         //assigns answerEl with a specific
         answerEl.textContent = answersArr1[round][i];
         answerListEl.appendChild(answerEl);
-        if (round + 1 > questionArr.length) {  
-        highScoreScreen();
-    }    
-        
+      
     }
-        console.log(round + 1);
+        console.log("round " + round);
         console.log(questionArr.length);
         
         answerListEl.addEventListener("click", chooseAnswer);
     
     
-
 }; 
 
-var chooseAnswer = function() {
+var chooseAnswer = function(event) {
       //get the current selected option's value and makes lowercase
-    var statusValue = JSON.stringify(event.target);
+    var statusValue = (event.target.textContent); /// look here
     console.log(statusValue);
-    if (statusValue === "green") {
+    if (statusValue === "Hypertext Markup Language") {
+        gradeAnswerEl.textContent = "Correct!"
+        console.log("correct answer");
+    } else if (statusValue === "a tag that defines a division or section in an HTML document") {
+        gradeAnswerEl.textContent = "Correct!"
+        console.log("correct answer");
+    } else if (statusValue === "the i is just a variable, it could be anything, but it typically means acts as an 'index'") {
         gradeAnswerEl.textContent = "Correct!"
         console.log("correct answer");
     } else {
@@ -150,21 +169,22 @@ var chooseAnswer = function() {
 
     //empties current content in the quiz.
     quizEl.textContent = "";
-    //add to round
-    round++;
-    //goes to next question or to high score page
-    if (round + 1 > questionArr.length) {  
-        clearInterval(timerInterval);
-        highScoreScreen();
+  
+    if (round + 1 < questionArr.length && timeSeconds >= 1) {  
+             //add to round
+            round++;
+            askQuestion(round);
     } else {
-        askQuestion(round);
+        round++;
+        highScoreScreen();
     }
     
 }
 
 var highScoreScreen = function() {
+    console.log("loading high score screen");
     //prevents refreshing on submit
-    event.preventDefault();
+    //event.preventDefault();
     //main high score div
     var highScoreDivEl = document.createElement("div");
     //h3 for high score
@@ -172,9 +192,10 @@ var highScoreScreen = function() {
     //form element
     var initialFormEl = document.createElement("form");
     //input element
-    var initialsInputEl = document.createElement("input");
-                //initialsInputEl.className = "player-initials";
-    //initialsInputEl.setAttribute("initials", initial)
+    initialsInputEl = document.createElement("input");
+    initialsInputEl.id = "initials-input";
+    initialsInputEl.maxLength = 3;
+
     //submit button
     var submitInitialsButtonEl = document.createElement("button");
     submitInitialsButtonEl.textContent = "Submit";
@@ -200,36 +221,55 @@ var highScoreScreen = function() {
 }
 
 var saveShowHighScore = function() {
-    //save what's in the form
-    //localStorage.setItem( , )
-    //clear out "high score"
-    highScoreEl.textContent = "";
-    
+    //player
+    var player = {
+        initials: initialsInputEl.value,
+        score: timeSeconds,
+    };
+
+      // set new submission to local storage 
+  localStorage.setItem("player", JSON.stringify(player));
+
+  // clears the form
+   document.getElementById("initials-input").value="";
 }
 
 var backToMain = function() {
-    // var backButtonEl = document.createElement("button");
-    // backButtonEl.addEventListener("click", backToMain);
-    // introEl.appendChild(this.document);
-    // introEl.createElement(introEl);
-    console.log("clicked!");
-
     //revert time message
-    timeMessageEl.textContent = "Time left: ";
-    //clear out high score section
-    //quizEl.textContent = "";
+    //timeMessageEl.textContent = "Time left: ";
+    timeMessageEl.innerHTML = "Time Left/Score: <span id='seconds'></span>"
+    timeSecondsEl = document.querySelector("#seconds");
+    timeSeconds = 100;
+    timeSecondsEl.textContent = timeSeconds;
+//intro welcome
+
+//make new elements for introEl
+var introWelcomeEl = document.createElement("h2");
+introWelcomeEl.textContent = "Welcome to HTMLJavaQuiz";
+var directionsEl = document.createElement("h4");
+directionsEl.textContent = 'Hit the "Start Quiz" button to answer 5 questions on Javascript. Keep track of your time! Your time is your score, and answer questions incorrectly will deduct from your time.';
+startButtonEl = document.createElement("button");
+startButtonEl.id = "start-button";
+startButtonEl.textContent = "Start Quiz!";
     highScoreEl.textContent = "";
+    footerEl.textContent = "";
     
-    //make new elements for intro div
-    //may need to retype them all in here
-    document.appendChild(introEl);
+
+    //append elements
+    introEl.appendChild(introWelcomeEl);
+    introEl.appendChild(directionsEl);
+    introEl.appendChild(startButtonEl);
+
+
+    startButtonEl.addEventListener("click", startQuiz);
 
 }
 
 
 //--------------------------------actual code
 
-startButtonEl.addEventListener("click", startQuiz);
+//startButtonEl.addEventListener("click", startQuiz);
 
+backToMain();
 
 
