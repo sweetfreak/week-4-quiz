@@ -14,13 +14,13 @@ This HTML file requires a .CSS style sheet and .js file for javascript functiona
 ## Features
 This quiz features 3 questions. The timer starts at 100 seconds, but the player loses 20 seconds for each incorrect answer. If time runs out, or all the questions are answered, the player is brought to the high score screen, where they can enter their initials, or go back to the main menu. If they submit their initials, they'll see a list of other scores, retrieved from the local storage.
 
-[Main Menu, seen on open](./assets/images/MainMenu.png) 
+![Main Menu, seen on open](./assets/images/MainMenu.png) 
 
-[Question Example](./assets/images/QuestionExample.png) 
+![Question Example](./assets/images/QuestionExample.png) 
 
-[Enter Initials for High Score List](./assets/images/EnterInitials.png) 
+![Enter Initials for High Score List](./assets/images/EnterInitials.png) 
 
-[High Score List](./assets/images/highScoreList.png) 
+![High Score List](./assets/images/highScoreList.png) 
 
 ## License 
 Source: choosealicense.com
