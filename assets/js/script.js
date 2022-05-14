@@ -26,7 +26,7 @@ var backToMainBox = document.querySelector("#back-to-main-box")
 //var initialsInputEl = document.createElement("input");
 
 // global player variable
-var highScoreList = [];
+var highScoreList = []
 
 
 //array of questions
@@ -46,7 +46,23 @@ var answersArr1 = [
 var players = [];
 
 //------------------------------Variable functions
-var startQuiz = function(event) {
+var loadHighScores= function() {
+    var savedScores = localStorage.getItem("highScores");
+    highScoreList = savedScores;
+
+    console.log(savedScores);
+
+    if (highScoreList) {
+        highScoreList = JSON.parse(highScoreList);
+        console.log("saved data: " + (highScoreList));
+    } else {
+        highScoreList = [];
+        console.log("no saved data " + savedScores)
+        return false;
+    }
+}
+
+var startQuiz = function() {
    
     introEl.textContent = "";
 
@@ -93,15 +109,20 @@ function countdown() {
 
 
 var askQuestion = function(questionNumber) {
+    //test
+    
     //creates box for questions
     var questionBoxEl = document.createElement("div");
+    questionBoxEl.className = "quiz-box";
     //creates h2 element forquestion
     var questionH2El = document.createElement("h2");
     //creates box for list of answers
     var answersBoxEl = document.createElement("div");
+    answersBoxEl.className = "quiz-box"
     //creates answers ordered list
     var answerListEl = document.createElement("ol");
-    
+    answerListEl.className = "answer-list"
+
     //adds question box to quiz el
     quizEl.appendChild(questionBoxEl);
     //adds question h2 el to question box
@@ -112,6 +133,7 @@ var askQuestion = function(questionNumber) {
     quizEl.appendChild(answersBoxEl);
     //adds answers list ol element
     answersBoxEl.appendChild(answerListEl);
+    
     //Adds li elements for all answers, based on the round number
     //condition may be incorrect, but it works?
     for (var i = 0; answersArr1[round][i]; i++) {
@@ -209,21 +231,25 @@ var highScoreScreen = function() {
     backToMainButtonEl.addEventListener("click", backToMain);
 
     //submit and show high scores
-    submitInitialsButtonEl.addEventListener("click", function(event){
+    
+    submitInitialsButtonEl.addEventListener("click", function(){
         //won't reload page on submit
-        event.preventDefault();
+        //event.preventDefault();
+        //clears gradeAnswerEl
+        gradeAnswerEl.textContent = "";
         //player object
         var playerData = {
         initials: initialsInputEl.value,
         score: timeSeconds
         };
 
-        //array of player objects
+        //push to array of player objects
         highScoreList.push(playerData);
         
-        // saves submission to 
+        // saves playerData
         localStorage.setItem("highScores", JSON.stringify(highScoreList));
-        
+        event.preventDefault();
+
        // console.log("players array after push: " + highScoreList);
 
         // clears the form 
@@ -237,10 +263,11 @@ var highScoreScreen = function() {
     
         //gets items saved as strings
         var playerScoreString = localStorage.getItem("highScores");
+
+       
         //parse back into Object
         highScoreList = JSON.parse(playerScoreString);
 
-  
     var scoreListEl = document.createElement("ul");
     highScoreDivEl.appendChild(scoreListEl);
     //new code
@@ -255,13 +282,11 @@ var highScoreScreen = function() {
     });
 }
 
-
-
 var backToMain = function() {
+    loadHighScores();
     //removes back to main button
     backToMainBox.textContent = "";
-    //clears gradeAnswerEl
-    gradeAnswerEl.textContent = "";
+    
     //resets time left/score message and timeSeconds variable
     timeMessageEl.innerHTML = "Time Left/Score: <span id='seconds'></span>"
     timeSecondsEl = document.querySelector("#seconds");
@@ -295,7 +320,6 @@ startButtonEl.textContent = "Start Quiz!";
 //--------------------------------actual code
 
 //startButtonEl.addEventListener("click", startQuiz);
-
 backToMain();
 
 

@@ -2,6 +2,38 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
+
+header, #intro, footer {
+    flex: auto; 
+    text-align: center;
+}
+
+.quiz-box, .quiz-box ol {
+    text-align: center;
+    font-weight: bold;
+}
+
+.answer-list li {
+    list-style-position: inside;
+   
+     
+}
+
+
+ol > li:before {
+    display: inline-block;
+    font-weight: bold;
+    text-align: right;
+    
+  }
+
+#quiz-area, #high-score {
+    flex: auto;
+    justify-content: center;
+    text-align: center;
+
+}
+
 #grade-answer {
     color: black;
     font-style: italic;
