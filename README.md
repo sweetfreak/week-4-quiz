@@ -6,23 +6,21 @@
 * [License] (#License)
 
 ## Overview
-This is the full script for a time-based quiz on HTML and Javascript. The main menu is loaded up right away, giving the player the directions and offering the start quiz button. Once it's pushed, a question and several multiple choice answers appear, and the timer begins to countdown. After several questions, the User is asked to input their initials, or go back to the main menu.
+This is the full script for a time-based quiz on HTML and Javascript. The main menu is loaded up right away, giving the player the directions and offering the start quiz button. Once it's pushed, a question and several multiple choice answers appear, and the timer begins to countdown. After several questions, the User is asked to input their initials, or go back to the main menu. If they input their initials, they'll be brought tot he high scores page.
 
 ## Installation
 This HTML file requires a .CSS style sheet and .js file for javascript functionality. By placing the entire website folder on a server together, it can be uploaded to a server, and the files can be found.
 
 ## Features
-Upon clicking the "Generate Password" button, window prompts ask the user to input how many characters long their password should be. If a number between 8 and 128 is not input, it will prompt the user again.
+This quiz features 3 questions. The timer starts at 100 seconds, but the player loses 20 seconds for each incorrect answer. If time runs out, or all the questions are answered, the player is brought to the high score screen, where they can enter their initials, or go back to the main menu. If they submit their initials, they'll see a list of other scores, retrieved from the local storage.
 
-Next, prompts appear asking the users whether they would like to include numbers, uppercase letters, lowercase letters, and then special characters in their password.
+[Main Menu, seen on open](./assets/images/MainMenu.png) 
 
-Finally, the program displays the password for the user to see and copy.
+[Question Example](./assets/images/QuestionExample.png) 
 
-[example of password generator at start](./assets/03-javascript-homework-demo.png) 
+[Enter Initials for High Score List](./assets/images/EnterInitials.png) 
 
-[example of an all special character password](./assets/100-special-char.png) 
-
-[example of 128 character password consisting of all data types](./assets/128-all-char-types.png) 
+[High Score List](./assets/images/highScoreList.png) 
 
 ## License 
 Source: choosealicense.com
