@@ -1,20 +1,4 @@
-//when click start quiz
-    //start timer
-    //show question
-    //show clickable answers
-        // if wrong, deduct time
-    //clicking on answer displays next questions
-    //also says whether previous answer was right or wrong.
-    //after 5 questions, OR when time is up show end screen
-        //says player's score (time left)
-        //asks to enter initials and hit send
-            //save the initials
-            //add them to the high score list
-            //display all scores? In numerical order?
-
-        //Display "start quiz again" button
-        
-//--------------------------------Variables
+//GLOBAL VARIABLES
 
 //finds intro element
 var introEl = document.querySelector("#intro");
@@ -24,6 +8,8 @@ var startButtonEl = document.querySelector("#start-button");
 var quizEl = document.querySelector("#quiz-area");
 //finds high score sections
 var highScoreEl = document.querySelector("#high-score");
+//footer section
+var footerEl = document.querySelector("#footer");
 //round number
 var round = 0;
 //time left
@@ -32,12 +18,15 @@ var timeSeconds = 100;
 var timeSecondsEl = document.querySelector("#seconds");
 //time-message
 var timeMessageEl = document.querySelector("#time-message");
-//footer 
-var footerEl = document.querySelector("#footer");
 //grade the answer right or wrong
 var gradeAnswerEl = document.querySelector("#grade-answer");
+//backToMainBox
+var backToMainBox = document.querySelector("#back-to-main-box")
 //input for initials
 //var initialsInputEl = document.createElement("input");
+
+// global player variable
+var highScoreList = [];
 
 
 //array of questions
@@ -74,87 +63,84 @@ var startQuiz = function(event) {
 
 // Timer that counts down from 5
 function countdown() {
-
-   if ((round + 1) > questionArr.length) {  
-
+    //if round+1 is more than the number of questions, stop the clock
+    if ((round + 1) > questionArr.length) {  
     clearInterval(timerInterval);
     }
-
-    var timerInterval = setInterval(function () {
-  
-         
-    // As long as the `timeLeft` is greater than 1
-       timeSecondsEl.textContent = timeSeconds;
-    
-
-    if (timeSeconds >= 1 && round +1 <= questionArr.length) {
-        timeSeconds--;
-        console.log(timeSeconds);
-    }  
-    else if (timeSeconds === 0){
-      // Once `timeLeft` gets to 0, set `timerEl` to an empty string
-      timeSecondsEl.textContent = '';
-      // Use `clearInterval()` to stop the timer
-      clearInterval(timerInterval);
-      // Call the "game Over" elements
-      timeMessageEl.textContent = "GAME OVER!";
-      //Call High Scores Screen
-      highScoreScreen();
-
-    }
-  }, 1000);
-
+    //starts counting down
+    var timerInterval = setInterval(function () { 
+        //makes this element text equal the seconds left
+        timeSecondsEl.textContent = timeSeconds;
+        // keep counting down if there's time left, and the round number isn't more than the amount of questions
+        if (timeSeconds >= 1 && round +1 <= questionArr.length) {
+            timeSeconds--;
+            console.log(timeSeconds);
+        }  
+        //time timer reaches 0
+        else if (timeSeconds === 0){
+            // set timer text to empty string 
+            timeSecondsEl.textContent = '';
+            // Use `clearInterval()` to stop the timer
+            clearInterval(timerInterval);
+            // Change timeMessage text to
+            timeMessageEl.textContent = "GAME OVER!";
+            //Call High Scores Screen
+            highScoreScreen();
+        }
+        //1000 milliseconds between each interval
+    }, 1000);
 }
 
 
 var askQuestion = function(questionNumber) {
-    
-    //makes box for questions
+    //creates box for questions
     var questionBoxEl = document.createElement("div");
-    //makes question
+    //creates h2 element forquestion
     var questionH2El = document.createElement("h2");
-    //makes answer box
+    //creates box for list of answers
     var answersBoxEl = document.createElement("div");
-    //makes answers list
+    //creates answers ordered list
     var answerListEl = document.createElement("ol");
     
-    //call quiz div
+    //adds question box to quiz el
     quizEl.appendChild(questionBoxEl);
-    //call quiz h2
+    //adds question h2 el to question box
     questionBoxEl.appendChild(questionH2El);
-    //call new question
+    //inputs text to question h2 el, based on the round
     questionH2El.textContent = questionArr[round];
-        
-    //call answer area
+    //adds answers box
     quizEl.appendChild(answersBoxEl);
-    //call answer list
+    //adds answers list ol element
     answersBoxEl.appendChild(answerListEl);
-    
-
+    //Adds li elements for all answers, based on the round number
+    //condition may be incorrect, but it works?
     for (var i = 0; answersArr1[round][i]; i++) {
         //calls list element
         var answerEl = document.createElement("li");
+        //gives it a class name for CSS
         answerEl.className = "answer-text";
-        //assigns answerEl with a specific
+        //assigns answerEl with specific answer text
         answerEl.textContent = answersArr1[round][i];
+        //adds answer li element with text to answer Ol list
         answerListEl.appendChild(answerEl);
       
     }
-        console.log("round " + round);
-        console.log(questionArr.length);
-        
-        answerListEl.addEventListener("click", chooseAnswer);
+    console.log("round " + round);
+    console.log(questionArr.length);
+    // Event listener = when the answer list el is clicked, chooseAnswer function runs   
+    answerListEl.addEventListener("click", chooseAnswer);
     
     
 }; 
 
 //could this be a switch case instead??
-
 var chooseAnswer = function(event) {
 
-      //get the current selected option's value and makes lowercase
-    var statusValue = (event.target.textContent); /// look here
+    //assigns text content of whatever was clicked on to the statusValue variable
+    var statusValue = (event.target.textContent);
     console.log(statusValue);
+    //checks if the textContent is the correct answer or not 
+    //Writes correct/wrong in the gradeAnswerEl within the footer
     if (statusValue === "Hypertext Markup Language") {
         gradeAnswerEl.textContent = "Correct!"
         console.log("correct answer");
@@ -170,27 +156,15 @@ var chooseAnswer = function(event) {
         timeSeconds -= 20; 
     }
 
-    // switch (round) {
-    //     //Or statement for each correct answer, paired with round
-    //     case ('0' && statusValue === "Hypertext Markup Language"):
-    //     //case '1' && (statusValue === "a tag that defines a division or section in an HTML document"):
-    //     //case '2' &&  (statusValue === "the i is just a variable, it could be anything, but it typically means acts as an 'index'"):
-    //     //result of case    
-    //     gradeAnswerEl.textContent = "Correct!"         
-    //          break;
-    //     //wrong answer - default;     
-    //     default:
-    //     gradeAnswerEl.textContent = "Wrong!"
-    // }
-
     //empties current content in the quiz.
     quizEl.textContent = "";
-  
+  //asks another question if there's still time and the round number equal to number of questions
     if (round + 1 < questionArr.length && timeSeconds >= 1) {  
-             //add to round
+             //+1 to round 
             round++;
             askQuestion(round);
     } else {
+        //still need to add round so the timer stops
         round++;
         highScoreScreen();
     }
@@ -225,7 +199,7 @@ var highScoreScreen = function() {
     quizEl.textContent = "";
     highScoreH3El.textContent = "Your score is " + timeSeconds + ". Enter your initials to submit your high score."
     
-    footerEl.appendChild(backToMainButtonEl);
+    backToMainBox.appendChild(backToMainButtonEl);
     highScoreEl.appendChild(highScoreDivEl);
     highScoreDivEl.appendChild(highScoreH3El);
     highScoreDivEl.appendChild(initialFormEl);
@@ -236,60 +210,46 @@ var highScoreScreen = function() {
 
     //submit and show high scores
     submitInitialsButtonEl.addEventListener("click", function(event){
-
+        //won't reload page on submit
         event.preventDefault();
-    //player object
-    var player = {
+        //player object
+        var playerData = {
         initials: initialsInputEl.value,
         score: timeSeconds
-    };
+        };
 
-      // set new submission to local storage 
-    localStorage.setItem("player", JSON.stringify(player));
-   
-    //push to players array
+        //array of player objects
+        highScoreList.push(playerData);
+        
+        // saves submission to 
+        localStorage.setItem("highScores", JSON.stringify(highScoreList));
+        
+       // console.log("players array after push: " + highScoreList);
+
+        // clears the form 
+        document.getElementById("initials-input").value="";
+
+        //Clear area
+        highScoreH3El.textContent = "";
+        highScoreDivEl.removeChild(initialFormEl);
+        highScoreDivEl.removeChild(submitInitialsButtonEl);
+        timeMessageEl.textContent = "High Scores:"
     
-    console.log("players array after push " + players);
+        //gets items saved as strings
+        var playerScoreString = localStorage.getItem("highScores");
+        //parse back into Object
+        highScoreList = JSON.parse(playerScoreString);
 
-  // clears the form 
-   document.getElementById("initials-input").value="";
-
-   //Clear area
-    highScoreH3El.textContent = "";
-
-    
-    //gets items saved as strings
-    players = localStorage.getItem("player");
-    //
-    var savedScoresArray = [];
-    //
-    savedScoresArray.push(player);
-    console.log(players);
-    console.log(savedScoresArray);
-
-    //checks if there's any data saved. if there's no data saved in tasks, it'll return false
-    // if (!players) { //could also write (!tasks)
-    //   players = [];
-    //   return false;
-    // }
-
-    //shows the high score - enter the 
-    var showHighScore = function(item) {
-    var createPEl = document.createElement("p");
-    createPEl.textElement = JSON.stringify(item);
-    highScoreDivEl.appendChild(createPEl);
-}
-    //convert tasks fromt he string format back into an array of objects
-    //var savedScoresArray = JSON.parse(savedScoresArray);
   
     var scoreListEl = document.createElement("ul");
     highScoreDivEl.appendChild(scoreListEl);
     //new code
-    for (var i=0; i < players.length; i++) {
+    for (var i=0; i < highScoreList.length; i++) {
       //pass each task object into the 'createTaskEl' function
       var scoreEl = document.createElement("li");
-      scoreEl.textContent = savedScoresArray[i];
-        scoreListEl.appendChild(scoreEl);
+      //scoreEl.textContent = highScoreList[i].
+      scoreEl.textContent= "User: " + highScoreList[i].initials + " | Score: " + highScoreList[i].score;  
+      scoreListEl.appendChild(scoreEl);
     }
 
     });
@@ -298,8 +258,11 @@ var highScoreScreen = function() {
 
 
 var backToMain = function() {
-    //revert time message
-    //timeMessageEl.textContent = "Time left: ";
+    //removes back to main button
+    backToMainBox.textContent = "";
+    //clears gradeAnswerEl
+    gradeAnswerEl.textContent = "";
+    //resets time left/score message and timeSeconds variable
     timeMessageEl.innerHTML = "Time Left/Score: <span id='seconds'></span>"
     timeSecondsEl = document.querySelector("#seconds");
     timeSeconds = 100;
